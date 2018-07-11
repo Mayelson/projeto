@@ -1,0 +1,354 @@
+<html>
+<head>
+ <style>
+ body { margin: 0; }
+ canvas { width: 100%; height: 100% }
+</style>
+</head>
+<body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/87/three.min.js"></script>
+<script src='grass/threex.grass.js'></script>
+
+ <!-- ElectronicArmory.com -->
+ <script>
+ // ElectronicArmory.com
+
+ // Setup a new scene
+ var scene = new THREE.Scene();
+ scene.background = new THREE.Color( 0xffffff );
+ var objects = [];
+ // Setup the camera
+var camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 200000);
+
+var keyboard = {};
+var player = { width:60, height:8, speed:1.8, turnSpeed:Math.PI*0.02 };
+
+  camera.position.set(player.width, player.height, -172);
+  camera.lookAt(new THREE.Vector3(player.width, player.height, 0));
+
+ // Setup the renderer
+ var renderer = new THREE.WebGLRenderer();
+ renderer.setSize(window.innerWidth, window.innerHeight);
+ document.body.appendChild(renderer.domElement);
+
+ // Add the lights
+ var light = new THREE.HemisphereLight( 0xffffff, 0xffffff, 1 );          
+ light.position.set( -120, 80, 40 );
+ scene.add( light );
+
+
+
+/*---------------------------------------CARREGAMENTO DOS MODELOS-----------------------*/
+ // Models
+ var casaA;
+ var casaB;
+ var terreno;
+ var arvore;
+ var arvore2;
+ var arvore3;
+ var arvore4;
+ var arbustos;
+var barraca;
+var max_displacement = 0.2;
+var scale = 2;
+ // Load the JSON files and provide callback functions (modelToScene
+ var loader = new THREE.JSONLoader();
+ //loader.load( "models/main_building.json", addModelToScene );
+ loader.load( "models/buildA.json", addModelToScene);
+
+ // After loading JSON from our file, we add it to the scene
+ function addModelToScene( geometry, materials ) {
+   casaA = new THREE.Mesh( geometry, materials );
+   casaA.scale.set(40,40,40);
+   casaA.position.y = -40;
+   casaA.position.z = -20;
+   casaA.position.x = -210;
+scene.add( casaA );
+   objects.push(casaA);
+ }
+
+ loader.load( "models/gallina.json", addModelToScene2);
+
+ // After loading JSON from our file, we add it to the scene
+ function addModelToScene2( geometry, materials ) {
+   casaB = new THREE.Mesh( geometry, materials );
+   casaB.scale.set(40,40,40);
+   casaB.position.y = -40;
+   casaB.position.z = 20;
+   casaB.position.x = -220;
+  scene.add( casaB );
+   objects.push(casaB);
+ }
+
+ loader.load( "models/gradient.json", addModelToScene3);
+
+ // After loading JSON from our file, we add it to the scene
+ function addModelToScene3( geometry, materials ) {
+   terreno = new THREE.Mesh( geometry, materials );
+   terreno.scale.set(20,20,20);
+   terreno.position.y = -40;
+   terreno.position.z = -500;
+   terreno.position.x = Math.PI/2;
+  scene.add( terreno );
+ }
+
+loader.load( "models/arbustosv3.json", addModelToScene5);
+
+ // After loading JSON from our file, we add it to the scene
+ function addModelToScene5( geometry, materials ) {
+   arbustos = new THREE.Mesh( geometry, materials );
+   arbustos.scale.set(0.3,0.3,0.3);
+   arbustos.position.y = -40;
+   arbustos.position.z = 100;
+   arbustos.position.x = -550;
+  scene.add( arbustos );
+   
+/****************************ARVORES**********************************************/
+
+ loader.load( "models/oliveira.json", addModelToScene4);
+
+ // After loading JSON from our file, we add it to the scene
+ function addModelToScene4( geometry, materials ) {
+   arvore = new THREE.Mesh( geometry, materials );
+   arvore.scale.set(25,25,25);
+   arvore.position.y = -40;
+   arvore.position.z = 100;
+   arvore.position.x = -500;
+   //scene.add( arvore );
+   objects.push(arvore);
+ }
+
+
+ }
+
+ loader.load( "models/oliveira.json", addModelToScene7);
+
+ // After loading JSON from our file, we add it to the scene
+ function addModelToScene7( geometry, materials ) {
+   arvore3 = new THREE.Mesh( geometry, materials );
+   arvore3.scale.set(20,20,20);
+   arvore3.position.y = -40;
+   arvore3.position.z = 50;
+   arvore3.position.x = -170;
+ //  scene.add( arvore3 );
+   objects.push(arvore3);
+ }
+
+ loader.load( "models/oliveira.json", addModelToScene6);
+
+ // After loading JSON from our file, we add it to the scene
+ function addModelToScene6( geometry, materials ) {
+   arvore2 = new THREE.Mesh( geometry, materials );
+   arvore2.scale.set(25,25,25);
+   arvore2.position.y = -40;
+   arvore2.position.z = -500;
+   arvore2.position.x = -300;
+//   scene.add( arvore2 );
+   objects.push(arvore2);
+ }
+
+
+
+ loader.load( "models/sobreiro.json", addModelToScene12);
+
+ // After loading JSON from our file, we add it to the scene
+ function addModelToScene12( geometry, materials ) {
+   arvore4 = new THREE.Mesh( geometry, materials );
+   arvore4.scale.set(40,40,40)
+   arvore4.position.y = -40;
+   arvore4.position.z = -200;
+   arvore4.position.x = -500;
+  //scene.add( arvore4 );
+ }
+
+
+/***********************************ELEMENTOS************************************************/
+
+  loader.load( "models/barraca.json", addModelToScene13);
+
+ // After loading JSON from our file, we add it to the scene
+ function addModelToScene13( geometry, materials ) {
+   barraca = new THREE.Mesh( geometry, materials );
+   barraca.scale.set(40,40,40)
+   barraca.position.y = -40;
+   barraca.position.z = -400;
+   barraca.position.x = -500;
+  scene.add( barraca );
+ }
+
+
+ var geometry = new THREE.BoxGeometry( 200000, 160000, 200000 );
+
+
+ var imagePrefix = "img/mirobriga/panoramica/";
+ var directions = ["posx","negx","","","posz","negz"];
+ var imageSuffix = ".jpg";
+ var cubeMaterials = [];
+ for(var i = 0; i < 6; i++ )
+  cubeMaterials.push(new THREE.MeshBasicMaterial({
+    map: THREE.ImageUtils.loadTexture( imagePrefix + directions[i] + imageSuffix),
+    side: THREE.BackSide
+  }));
+var cube = new THREE.Mesh( geometry, cubeMaterials );
+cube.position.set(50000,59000,0);
+scene.add( cube );
+cube.rotation.y=9;
+
+
+function keyDown(event){
+  keyboard[event.keyCode] = true;
+}
+
+function keyUp(event){
+  keyboard[event.keyCode] = false;
+}
+
+window.addEventListener('keydown', keyDown);
+window.addEventListener('keyup', keyUp);
+ // Render loop to rotate our sphere by a little bit each frame
+ var animate = function () {
+
+
+
+
+  if(keyboard[87]){ // W key
+ //   if (camera.position.z < 281) {
+    camera.position.x -= Math.sin(camera.rotation.y) * player.speed;
+    camera.position.z -= -Math.cos(camera.rotation.y) * player.speed;
+ // }
+      //console.log("x", camera.position);
+  }
+  if(keyboard[83]){ // S key
+
+    camera.position.x += Math.sin(camera.rotation.y) * player.speed;
+    camera.position.z += -Math.cos(camera.rotation.y) * player.speed;
+  }
+  if(keyboard[65]){ // A key
+    camera.position.x += Math.sin(camera.rotation.y + Math.PI/2) * player.speed;
+    camera.position.z += -Math.cos(camera.rotation.y + Math.PI/2) * player.speed;
+  }
+  if(keyboard[68]){ // D key
+    camera.position.x += Math.sin(camera.rotation.y - Math.PI/2) * player.speed;
+    camera.position.z += -Math.cos(camera.rotation.y - Math.PI/2) * player.speed;
+  }
+  
+  if(keyboard[37]){ // left arrow key
+    camera.rotation.y -= player.turnSpeed;
+  }
+  if(keyboard[39]){ // right arrow key
+    camera.rotation.y += player.turnSpeed;
+  }
+//console.log(camera.position);
+//console.log(objects);
+var INTERSECTED;
+var raycaster = new THREE.Raycaster();
+var mouse = new THREE.Vector2(camera.position.x, camera.position.z);
+
+
+var player_pos_x = camera.position.x ;
+var player_pos_z = camera.position.z ;
+
+var collision_flag = false;
+raycaster.far = 10;
+
+  raycaster.setFromCamera(mouse, camera );
+  var intersects = raycaster.intersectObjects( objects );
+
+        if ( intersects.length > 0 ) {
+          console.log(intersects);
+          if ( INTERSECTED != intersects[ 0 ].object ) {
+            if ( INTERSECTED ) INTERSECTED.material.emissive.setHex( INTERSECTED.currentHex );
+            INTERSECTED = intersects[ 0 ].object;
+            //INTERSECTED.currentHex = INTERSECTED.material.emissive.getHex();
+        
+                   var tileWidth = scale;//5; 
+                  
+                  var tile_pos_x = x * scale //+ tileWidth/2;
+                  var tile_pos_z = z * scale //+ tileWidth/2;
+                  
+                  var fudge = 0.1;
+                  //...increases apparent size of collision target
+                  //... to help avoid camera penetration of wall cubes.
+                  
+                  var tile_x_min = tile_pos_x - tileWidth/2 - fudge;
+                  var tile_x_max = tile_pos_x + tileWidth/2 + fudge;
+                  var tile_z_min = tile_pos_z - tileWidth/2 - fudge;
+                  var tile_z_max = tile_pos_z + tileWidth/2 + fudge;
+
+             if (   tile_x_min <= player_pos_x && player_pos_x <= tile_x_max
+                      && tile_z_min <= player_pos_z && player_pos_z <= tile_z_max )                              
+                  {
+                        collision_flag = true;
+                        Message = "IN Wall Cell [" + x + "," + z +  "]" +
+                        "(x:" + tile_pos_x + ", z:" + tile_pos_z + ")" 
+                         ;                       
+                        player.velocity.x = 0;
+                        player.velocity.z = 0;                        
+                        //break;
+                   }   
+
+
+
+
+          }
+        } else {
+
+          if ( INTERSECTED ) INTERSECTED.material.emissive.setHex( INTERSECTED.currentHex );
+          INTERSECTED = null;
+       
+        }
+
+
+
+        /*************************************************************************NEW ANIMATION*************************************************************************************/
+
+
+
+
+
+
+
+
+
+
+
+  requestAnimationFrame( animate );
+ 
+  renderer.render(scene, camera);
+};
+
+var colisao = function(){
+
+
+
+  if(keyboard[87]){ // W key
+ //   if (camera.position.z < 281) {
+    camera.position.x += Math.sin(camera.rotation.y) * player.speed;
+    camera.position.z += -Math.cos(camera.rotation.y) * player.speed;
+ // }
+      //console.log("x", camera.position);
+  }
+  if(keyboard[83]){ // S key
+
+    camera.position.x -= Math.sin(camera.rotation.y) * player.speed;
+    camera.position.z -= -Math.cos(camera.rotation.y) * player.speed;
+  }
+  if(keyboard[65]){ // A key
+    camera.position.x += Math.sin(camera.rotation.y - Math.PI/2) * player.speed;
+    camera.position.z += -Math.cos(camera.rotation.y - Math.PI/2) * player.speed;
+  }
+  if(keyboard[68]){ // D key
+    camera.position.x += Math.sin(camera.rotation.y + Math.PI/2) * player.speed;
+    camera.position.z += -Math.cos(camera.rotation.y + Math.PI/2) * player.speed;
+  }
+
+
+
+}
+
+animate();
+ // ElectronicArmory.com
+</script>
+</body>
+<!-- ElectronicArmory.com -->
+</html>
